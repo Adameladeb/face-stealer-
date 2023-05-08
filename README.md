@@ -2,6 +2,8 @@ Capture Camera 📷
 
 Capture Camera is a simple web application that allows users to capture images using their device's camera and send them to a Discord webhook. This can be used to scare kids :D.
 
+I highly recommend index3.html
+
 How it Works
 
 Capture Camera uses the MediaDevices.getUserMedia() method to access the user's camera and capture images. The captured images are then sent to a specified Discord webhook using the XMLHttpRequest() method.
