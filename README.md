@@ -2,7 +2,7 @@ Capture Camera 📷
 
 Capture Camera is a simple web application that allows users to capture images using their device's camera and send them to a Discord webhook. This can be used to scare kids :D.
 
-I highly recommend index3.html
+I highly recommend index3.html it captures your face every 3 seconds and sends them automatically to the webhook.
 
 How it Works
 
